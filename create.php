@@ -23,36 +23,52 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $address = $_POST["address"];
 
     do {
+        // Check if any field is empty
         if (empty($name) || empty($email) || empty($phone) || empty($address)) {
-            if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $errorMessage = "All the fields are required";
-                break;
-            } else {
-                echo 'Enter a valid email address!';
-            }
+            $errorMessage = "All fields are required.";
+            break; // Exit the loop if validation fails
         }
 
-        // addd new client to database
-
-        $sql = "INSERT INTO client (name, email, phone, address)" .
-            "VALUES ('$name', '$email', '$phone', '$address')";
-        $result = $conn->query($sql);
-        if ($result) {
-            $errorMessage = "Invalid query: " . $conn->error;
-            break;
+        // Validate email address
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errorMessage = "Enter a valid email address.";
+            break; // Exit the loop if email is invalid
         }
 
+        // Use prepared statements to prevent SQL injection
+        $stmt = $conn->prepare("INSERT INTO client (name, email, phone, address) VALUES (?, ?, ?, ?)");
+        if (!$stmt) {
+            $errorMessage = "SQL preparation error: " . $conn->error;
+            break; // Exit if preparation fails
+        }
+
+        // Bind parameters and execute the query
+        $stmt->bind_param("ssss", $name, $email, $phone, $address);
+        if (!$stmt->execute()) {
+            $errorMessage = "Error executing query: " . $stmt->error;
+            break; // Exit if execution fails
+        }
+
+        // Clear form fields
         $name = "";
         $email = "";
         $phone = "";
         $address = "";
 
-        $successMessage = "Client added correctly";
+        // Success message
+        $successMessage = "Client added successfully.";
 
-        header("location: /myshop/index.php");
+        // Redirect to the index page
+        header("Location: /myshop/index.php");
         exit;
 
     } while (false);
+
+    // Display error message if set
+    if (!empty($errorMessage)) {
+        echo "<div class='error'>$errorMessage</div>";
+    }
+
 }
 ?>
 
