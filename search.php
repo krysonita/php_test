@@ -66,6 +66,6 @@
         }
     } else {
         // No results found
-        echo "<tr><td colspan='7'>No clients found...</td></tr>";
+        echo "<tr><td colspan='7'>No clients found by search term...</td></tr>";
     }
 ?>

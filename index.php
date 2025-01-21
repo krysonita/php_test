@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My shop</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    
-
 </body>
 </html>
 
@@ -19,7 +17,7 @@
         <br>
         <br>
         <div class="col-sm-6">
-        <input type="text" id="search_bar" placeholder="Search Client..." class="form-control">
+        <input type="text" name="search" id="search_bar" placeholder="Search Client..." class="form-control">
 
         </div>
         <br>
